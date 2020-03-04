@@ -2,22 +2,15 @@ const inquirer = require("inquirer");
 const fs = require('fs');
 const axios = require("axios");
 
-let username = "";
-let picture = "";
-let email = "";
-
 // for the editor questions, the default editor will be launched. For my machine, it is Vim.
 // press i to start typing, press esc key then :x enter to save your answer.
 
-axios
-  .get("https://api.github.com/users/kcbobbe")
-  .then(function(res) {
-    username = res.data.name;
-    picture = res.data.avatar_url;
-    email = res.data.email;
-  });
-
-inquirer.prompt([
+const questions = [
+  {
+    type: "input",
+    name: "username",
+    message: "What is your GitHub username?"
+  },
   {
     type: "input",
     name: "title",
@@ -28,7 +21,6 @@ inquirer.prompt([
     name: "description",
     message: "Write a brief description of your application."
   },
-
   {
     type: "checkbox",
     message: "What languages did you use to build this application?",
@@ -41,27 +33,27 @@ inquirer.prompt([
     ]
   },
   {
-    type: "editor",
+    type: "input",
     message: "What are the steps to install the application?",
     name: "installation",
   },
   {
-    type: "editor",
+    type: "input",
     message: "Describe the usage of the application.",
     name: "usage",
   },
   {
-    type: "editor",
+    type: "input",
     message: "Add credits",
     name: "credits",
   },
   {
-    type: "editor",
+    type: "input",
     message: "Add contributors",
     name: "contributors",
   },
   {
-    type: "editor",
+    type: "input",
     message: "Any questions?",
     name: "questions",
   },
@@ -76,33 +68,48 @@ inquirer.prompt([
       "GNU GPL v3.0"
     ]
   }
-]).then(function(data) {
-  console.log(data.title)
-  console.log(data.stack)
+]
 
-  let licenseBadge = "";
-  if (data.license === "MIT"){
-    licenseBadge = `\r[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)`;
-  } else if (data.license === "Apache 2.0"){
-    licenseBadge = `\r[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)`
-  } else if (data.license === "GNU GPL v3.0"){
-    licenseBadge= `\r[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)`
+const api = {
+  getUser: function(username, inputData) {
+    axios
+    .get(`https://api.github.com/users/${username}`)
+    .then(function(res) {
+      apiCallback(res, inputData)
+  });
   }
+}
 
-  var stackList = "";
-  data.stack.forEach(stack => {
+const generateBadge = (license) =>{
+  if (license === "MIT"){
+    return `\r[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)`;
+  } else if (license === "Apache 2.0"){
+     return `\r[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)`
+  } else if (license === "GNU GPL v3.0"){
+    return `\r[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)`
+  } 
+}
+
+const generateStackList = (stack) => {
+  let stackList = "";
+  stack.forEach(stack => {
     stackList = stackList + 
     `\r* ${stack}
     `
-    console.log(stackList)
-  })
   
-  let readmeText = 
-`
+  })
+  return stackList;
+}
+
+const generateMarkdown = (userData, data) => {
+  let licenseBadge = generateBadge(data.license)
+  let stackList = generateStackList(data.stack)
+
+  return `
 # ${data.title}
 ${licenseBadge}
-## By ${username} | ${email}
-![Katie's Pic](${picture})
+## By ${userData.data.name}
+![Katie's Pic](${userData.data.avatar_url})
 
 ## Table Of Contents
 1. Description
@@ -127,17 +134,38 @@ ${data.contributors}
 ${data.questions}
 ## Credits 
 ${data.credits}
-`
+`  
+}
 
-    
+const apiCallback = (userData, data) => {
+  let readmeText =  generateMarkdown(userData, data);
+  writeToFile("README.md", readmeText)
+}
 
-  fs.writeFile("README.md", readmeText, (err) => {
+const inquirerPrompts = () =>{
+  inquirer.prompt(questions).then(function(data) {
 
+    api.getUser('kcbobbe', data)
+
+    console.log(data.title)
+    console.log(data.stack)
+  
+    // let readmeText = generateMarkdown(data);
+    // writeToFile("README.md", readmeText)
+  });
+}
+
+function writeToFile(fileName, data) {
+  fs.writeFile(fileName, data, (err) => {
     if (err) {
       return console.log(err);
     }
-
     console.log("Success!");
-
   });
-});
+}
+
+function init() {
+  inquirerPrompts();
+}
+
+init();
