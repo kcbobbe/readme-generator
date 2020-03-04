@@ -1,8 +1,8 @@
 
-# 
+# The readme generator
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ## By Katie Bobbe
-![Katie's Pic](https://avatars2.githubusercontent.com/u/38509741?v=4)
+![Katie Bobbe's Pic](https://avatars2.githubusercontent.com/u/38509741?v=4)
 
 ## Table Of Contents
 1. Description
@@ -14,19 +14,19 @@
 7. Credits
 
 ## Description
-
+it's a readme generator
 ## Technologies Used
-* CSS
-    * Python
+* HTML
+    * CSS
     * JavaScript
     
 ## Installation
-1
+npm install
 ## Usage
-2
+don't use it
 ## Contributors
-4
+
 ## Questions
-5
+
 ## Credits 
-3
+

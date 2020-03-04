@@ -109,7 +109,7 @@ const generateMarkdown = (userData, data) => {
 # ${data.title}
 ${licenseBadge}
 ## By ${userData.data.name}
-![Katie's Pic](${userData.data.avatar_url})
+![${userData.data.name}'s Pic](${userData.data.avatar_url})
 
 ## Table Of Contents
 1. Description
@@ -145,7 +145,7 @@ const apiCallback = (userData, data) => {
 const inquirerPrompts = () =>{
   inquirer.prompt(questions).then(function(data) {
 
-    api.getUser('kcbobbe', data)
+    api.getUser(data.username, data)
 
     console.log(data.title)
     console.log(data.stack)
