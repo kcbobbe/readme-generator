@@ -29,31 +29,32 @@ const questions = [
       "HTML", 
       "CSS",
       "Python",
-      "JavaScript"
+      "JavaScript",
+      "Node.js"
     ]
   },
   {
-    type: "input",
+    type: "editor",
     message: "What are the steps to install the application?",
     name: "installation",
   },
   {
-    type: "input",
+    type: "editor",
     message: "Describe the usage of the application.",
     name: "usage",
   },
   {
-    type: "input",
+    type: "editor",
     message: "Add credits",
     name: "credits",
   },
   {
-    type: "input",
+    type: "editor",
     message: "Add contributors",
     name: "contributors",
   },
   {
-    type: "input",
+    type: "editor",
     message: "Any questions?",
     name: "questions",
   },
